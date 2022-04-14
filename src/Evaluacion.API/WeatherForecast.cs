@@ -1,4 +1,4 @@
-namespace Prueba.API;
+namespace Evaluacion.API;
 
 public class WeatherForecast
 {
