@@ -1,15 +1,21 @@
 using Application;
+using Evaluacion.API.Filters;
 using Infraestructure;
-using Infraestructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using FluentValidation.AspNetCore;
+using Infraestructure.Persistence;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 var configuration = builder.Configuration;
 builder.Services.AddInfrastructure(configuration);
 builder.Services.AddApplication();
-builder.Services.AddControllers();
+builder.Services.AddControllers(opt => opt.Filters.Add<ApiExceptionFilterAttribute>())
+    .AddFluentValidation(x => x.AutomaticValidationEnabled = false);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -20,9 +26,12 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
+
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
+
+        await ApplicationDbContextSeed.SeedSampleDataAsync(context);
 
         if (context.Database.IsSqlServer())
         {
@@ -47,6 +56,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
 
 //app.UseAuthorization();
 

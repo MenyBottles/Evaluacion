@@ -1,4 +1,5 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
@@ -29,7 +30,11 @@ namespace Application.Products.Queries.GetProduct
 
         public async Task<GetProductDto> Handle(GetProductQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Products.Include(o => o.Status).SingleOrDefaultAsync(o => o.ProductId == request.ProductId, cancellationToken);
+            var entity = await _context.Products.Include(o => o.Status).FirstOrDefaultAsync(o => o.ProductId == request.ProductId, cancellationToken);
+            if(entity == null)
+            {
+                throw new NotFoundException(nameof(Product), request.ProductId);
+            }
             var result = _mapper.Map<GetProductDto>(entity);
             return result;
         }

@@ -11,7 +11,7 @@ namespace Domain.Entities
 {
     public class Product : AuditableEntity
     {
-        public Guid ProductId { get; set; }
+        public Guid ProductId { get; set; } = new Guid();
         public string? Name { get; set; }
         public StatusId StatusId { get; set; }
         public Status Status { get; set; }

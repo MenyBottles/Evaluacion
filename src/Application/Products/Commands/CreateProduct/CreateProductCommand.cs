@@ -36,7 +36,8 @@ namespace Application.Products.Commands.CreateProduct
                 Price = dto.Price
             };
             await _context.Products.AddAsync(entity, cancellationToken);
-            return new Guid();
+            await _context.SaveChangesAync(cancellationToken);
+            return entity.ProductId;
         }
     }
 }

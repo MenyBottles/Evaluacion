@@ -9,6 +9,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Domain.Common.Models;
+using Domain.Common.Enums;
+using System.Reflection;
 
 namespace Infraestructure.Persistence
 {
@@ -42,6 +44,21 @@ namespace Infraestructure.Persistence
             }
             var result = await base.SaveChangesAsync(cancellationToken);
             return result;
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder
+                .Entity<Product>()
+                .Property(e => e.StatusId)
+                .HasConversion<int>();
+
+            builder
+                .Entity<Status>()
+                .Property(e => e.StatusId)
+                .HasConversion<int>();
+
+            base.OnModelCreating(builder);
         }
     }
 }

@@ -1,25 +1,22 @@
-﻿using Application.Products.Commands.CreateProduct;
-using Domain.Common.Enums;
+﻿using Application.Products.Commands.UpdateProduct;
 using FluentValidation;
 
 namespace Application.TodoItems.Commands.CreateProduct;
 
-public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+public class UpdateProductCommandValidator : AbstractValidator<UpdateProductCommand>
 {
-    public CreateProductCommandValidator()
+    public UpdateProductCommandValidator()
     {
         RuleFor(v => v.Dto.Name)
             .NotEmpty();
         RuleFor(v => v.Dto.StatusId)
-            .NotNull()
-            .IsInEnum();
+            .NotEmpty();
         RuleFor(v => v.Dto.Price)
-            .NotNull()
             .NotEmpty();
         RuleFor(v => v.Dto.Description)
             .NotEmpty();
         RuleFor(v => v.Dto.Stock)
-            .NotNull();
+            .NotEmpty();
 
     }
 }

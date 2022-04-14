@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.Configurations;
+namespace Infraestructure.Persistence.Configurations;
 
 public class TodoItemConfiguration : IEntityTypeConfiguration<Product>
 {
@@ -19,7 +19,5 @@ public class TodoItemConfiguration : IEntityTypeConfiguration<Product>
             .IsRequired();
         builder.Property(o => o.Stock)
             .IsRequired();
-        builder.Property(e => e.StatusId)
-            .HasConversion<int>();
     }
 }

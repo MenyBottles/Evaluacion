@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Evaluacion.API.Filters;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Evaluacion.API.Controllers
