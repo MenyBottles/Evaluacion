@@ -24,11 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Common\Fixtures\" />
+    <ProjectReference Include="..\..\src\Evaluacion.API\Evaluacion.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Evaluacion.API\Evaluacion.API.csproj" />
+    <Folder Include="Products\Queries\" />
   </ItemGroup>
 
 </Project>

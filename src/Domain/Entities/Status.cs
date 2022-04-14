@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Domain.Entities
 {
     public class Status
     {
-        public int Key { get; set; }
+        public StatusId StatusId { get; set; }
         public string? Value { get; set; }
     }
 }

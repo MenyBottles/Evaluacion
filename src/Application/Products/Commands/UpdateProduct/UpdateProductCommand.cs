@@ -1,5 +1,7 @@
 ﻿using Application.Common.Interfaces;
+using Domain.Common.Enums;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +10,10 @@ using System.Threading.Tasks;
 
 namespace Application.Products.Commands.UpdateProduct
 {
-    internal class UpdateProductCommand : IRequest<bool>
+    public class UpdateProductCommand : IRequest<bool>
     {
-
+        public Guid ProductId { get; set; }
+        public UpdateProductDto Dto { get; set; }
     }
 
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, bool>
@@ -22,8 +25,16 @@ namespace Application.Products.Commands.UpdateProduct
             _context = context;
         }
 
-        public async Task<bool> Handle(UpdateProductCommand command, CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
+            var dto = request.Dto;
+            var entity = await _context.Products.FindAsync(request.ProductId);
+            entity.Name = dto.Name;
+            entity.StatusId = (StatusId)dto.StatusId;
+            entity.Stock = dto.Stock;
+            entity.Description = dto.Description;
+            entity.Price = dto.Price;
+            await _context.SaveChangesAync(cancellationToken);
             return true;
         }
     }

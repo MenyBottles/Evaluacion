@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using Domain.Entities;
+using Domain.Common.Models;
 
 namespace Infraestructure.Persistence
 {
@@ -14,10 +16,14 @@ namespace Infraestructure.Persistence
     {
         private readonly IDateTime _dateTime;
 
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDateTime dateTime) : base(options)
         {
             _dateTime = dateTime;
         }
+
+        public DbSet<Product> Products =>  Set<Product>();
+        public DbSet<Status> Status => Set<Status>();
 
         public async Task<int> SaveChangesAync(CancellationToken cancellationToken)
         {
