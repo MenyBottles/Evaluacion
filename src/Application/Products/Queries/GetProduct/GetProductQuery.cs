@@ -4,11 +4,7 @@ using AutoMapper;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Application.Products.Queries.GetProduct
 {
@@ -21,20 +17,32 @@ namespace Application.Products.Queries.GetProduct
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _memoryCache;
 
-        public GetProductQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetProductQueryHandler(IApplicationDbContext context, IMapper mapper, IMemoryCache memoryCache)
         {
             _context = context;
             _mapper = mapper;
+            _memoryCache = memoryCache;
         }
 
         public async Task<GetProductDto> Handle(GetProductQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Products.Include(o => o.Status).FirstOrDefaultAsync(o => o.ProductId == request.ProductId, cancellationToken);
+            var entity = await _context.Products.FindAsync(request.ProductId);
             if(entity == null)
             {
                 throw new NotFoundException(nameof(Product), request.ProductId);
             }
+
+            var status = _memoryCache.Get<List<Status>>("status");
+            if (status == null)
+            {
+                status = new();
+                status = _context.Status.ToList();
+                _memoryCache.Set("status", status, TimeSpan.FromMinutes(5));
+            }
+
+            entity.Status = status.Find(o => o.StatusId == entity.StatusId);
             var result = _mapper.Map<GetProductDto>(entity);
             return result;
         }
