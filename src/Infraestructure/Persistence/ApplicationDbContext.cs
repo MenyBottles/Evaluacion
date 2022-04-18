@@ -1,23 +1,13 @@
 ﻿using Application.Common.Interfaces;
-using Domain.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Domain.Entities;
 using Domain.Common.Models;
-using Domain.Common.Enums;
-using System.Reflection;
 
 namespace Infraestructure.Persistence
 {
     public class ApplicationDbContext : DbContext, IApplicationDbContext
     {
         private readonly IDateTime _dateTime;
-
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IDateTime dateTime) : base(options)
         {
@@ -26,6 +16,12 @@ namespace Infraestructure.Persistence
 
         public DbSet<Product> Products =>  Set<Product>();
         public DbSet<Status> Status => Set<Status>();
+
+        public override DbSet<TEntity> Set<TEntity>()
+        {
+            return base.Set<TEntity>();
+        }
+
 
         public async Task<int> SaveChangesAync(CancellationToken cancellationToken)
         {

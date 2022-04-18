@@ -12,7 +12,8 @@ namespace Evaluacion.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [HttpGet("{productId}", Name = "GetProductById")]
+        [ActionName(nameof(GetProductByIdAsync))]
+        [HttpGet("{productId}")]
         public async Task<GetProductDto> GetProductByIdAsync(Guid productId)
         {
             return await Mediator.Send(new GetProductQuery() { ProductId = productId });
@@ -23,10 +24,11 @@ namespace Evaluacion.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPost]
-        public async Task<Guid> CreateProductAsync([FromBody] CreateProductDto dto)
+        public async Task<ActionResult<GetProductDto>> CreateProductAsync([FromBody] CreateProductDto dto)
         {
-            return await Mediator.Send(new CreateProductCommand() { Dto = dto });
-            //return CreatedAtRoute("GetProductById", new { productId = productId });
+            var product = await Mediator.Send(new CreateProductCommand() { Dto = dto });
+            var createdAt = CreatedAtAction(nameof(GetProductByIdAsync),new { productId = product.ProductId }, product);
+            return createdAt;
         }
 
         [Produces("application/json")]

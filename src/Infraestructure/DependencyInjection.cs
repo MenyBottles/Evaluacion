@@ -1,4 +1,5 @@
 ﻿using Application.Common.Interfaces;
+using Domain.Entities;
 using Infraestructure.Persistence;
 using Infraestructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -32,6 +33,10 @@ namespace Infraestructure
             services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
             services.AddTransient<IDateTime, DateTimeService>();
+
+            services.AddTransient<ICacheService<Status>, CacheService<Status>>();
+
+            services.AddSingleton<IDiscountService, DiscountService>();
 
             return services;
         }

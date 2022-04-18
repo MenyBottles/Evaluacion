@@ -1,10 +1,5 @@
 ﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Common.Interfaces
 {
@@ -13,5 +8,8 @@ namespace Application.Common.Interfaces
         DbSet<Product> Products { get; }
         DbSet<Status> Status { get; }
         Task<int> SaveChangesAync(CancellationToken cancellationToken);
+
+        DbSet<TEntity> Set<TEntity>() where TEntity : class;
+
     }
 }

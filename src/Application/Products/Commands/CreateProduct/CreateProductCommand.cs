@@ -1,4 +1,6 @@
 ﻿using Application.Common.Interfaces;
+using Application.Products.Queries.GetProduct;
+using AutoMapper;
 using Domain.Common.Enums;
 using Domain.Entities;
 using MediatR;
@@ -10,21 +12,23 @@ using System.Threading.Tasks;
 
 namespace Application.Products.Commands.CreateProduct
 {
-    public class CreateProductCommand : IRequest<Guid>
+    public class CreateProductCommand : IRequest<GetProductDto>
     {
         public CreateProductDto Dto { get; set; }
     }
 
-    public class AddProductCommandHandler : IRequestHandler<CreateProductCommand, Guid>
+    public class AddProductCommandHandler : IRequestHandler<CreateProductCommand, GetProductDto>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public AddProductCommandHandler(IApplicationDbContext context)
+        public AddProductCommandHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<GetProductDto> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             var dto = request.Dto;
             var entity = new Product
@@ -37,7 +41,8 @@ namespace Application.Products.Commands.CreateProduct
             };
             await _context.Products.AddAsync(entity, cancellationToken);
             await _context.SaveChangesAync(cancellationToken);
-            return entity.ProductId;
+            var result = _mapper.Map<GetProductDto>(entity);
+            return result;
         }
     }
 }

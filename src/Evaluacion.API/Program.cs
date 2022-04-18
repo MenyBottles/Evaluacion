@@ -31,12 +31,13 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
 
-        await ApplicationDbContextSeed.SeedSampleDataAsync(context);
-
+        
         if (context.Database.IsSqlServer())
         {
             context.Database.Migrate();
         }
+        await ApplicationDbContextSeed.SeedSampleDataAsync(context);
+
     }
     catch (Exception ex)
     {

@@ -5,6 +5,7 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
 namespace Application.Products.Queries.GetProduct
 {
@@ -17,33 +18,30 @@ namespace Application.Products.Queries.GetProduct
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IMemoryCache _memoryCache;
+        private readonly ICacheService<Status> _cacheService;
+        private readonly IDiscountService _discountService;
 
-        public GetProductQueryHandler(IApplicationDbContext context, IMapper mapper, IMemoryCache memoryCache)
+        public GetProductQueryHandler(IApplicationDbContext context, IMapper mapper, ICacheService<Status> cacheService, IDiscountService discountService)
         {
             _context = context;
             _mapper = mapper;
-            _memoryCache = memoryCache;
+            _cacheService = cacheService;
+            _discountService = discountService;
         }
 
         public async Task<GetProductDto> Handle(GetProductQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Products.FindAsync(request.ProductId);
-            if(entity == null)
+            var entity = await _context.Products.SingleOrDefaultAsync(o => o.ProductId == request.ProductId);
+            var status = await _cacheService.GetFromCache();
+            if (entity == null)
             {
                 throw new NotFoundException(nameof(Product), request.ProductId);
             }
-
-            var status = _memoryCache.Get<List<Status>>("status");
-            if (status == null)
-            {
-                status = new();
-                status = _context.Status.ToList();
-                _memoryCache.Set("status", status, TimeSpan.FromMinutes(5));
-            }
-
-            entity.Status = status.Find(o => o.StatusId == entity.StatusId);
+            entity.Status = status.SingleOrDefault(o => o.StatusId == entity.StatusId);
+            //entity.Status = status.Find(o => o.StatusId == entity.StatusId);
             var result = _mapper.Map<GetProductDto>(entity);
+            result.Discount = await _discountService.GetDiscountAsync();
+            result.FinalPrice = result.Price * (100 - result.Discount) / 100;
             return result;
         }
     }
