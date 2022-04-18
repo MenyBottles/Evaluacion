@@ -10,13 +10,15 @@ public class UpdateProductCommandValidator : AbstractValidator<UpdateProductComm
         RuleFor(v => v.Dto.Name)
             .NotEmpty();
         RuleFor(v => v.Dto.StatusId)
-            .NotEmpty();
+            .NotNull()
+            .IsInEnum();
         RuleFor(v => v.Dto.Price)
+            .NotNull()
             .NotEmpty();
         RuleFor(v => v.Dto.Description)
             .NotEmpty();
         RuleFor(v => v.Dto.Stock)
-            .NotEmpty();
+            .NotNull();
 
     }
 }

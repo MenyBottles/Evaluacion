@@ -4,8 +4,14 @@ using Infraestructure;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation.AspNetCore;
 using Infraestructure.Persistence;
+using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((ctx, lc) => lc
+    .WriteTo.File("log.txt", Serilog.Events.LogEventLevel.Information)
+    .WriteTo.Console());
 
 
 
@@ -18,7 +24,13 @@ builder.Services.AddControllers(opt => opt.Filters.Add<ApiExceptionFilterAttribu
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddMemoryCache();
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = ApiVersion.Default;
+    options.ReportApiVersions = true;
+});
+
 
 var app = builder.Build();
 

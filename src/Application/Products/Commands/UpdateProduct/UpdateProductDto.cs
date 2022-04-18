@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Common.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Application.Products.Commands.UpdateProduct
         [Required]
         public string Name { get; set; }
         [Required]
-        public int StatusId { get; set; }
+        public StatusId StatusId { get; set; }
         [Required]
         public int Stock { get; set; }
         [Required]

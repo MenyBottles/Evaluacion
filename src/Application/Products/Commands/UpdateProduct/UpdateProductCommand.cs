@@ -1,5 +1,7 @@
-﻿using Application.Common.Interfaces;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Common.Enums;
+using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -29,8 +31,12 @@ namespace Application.Products.Commands.UpdateProduct
         {
             var dto = request.Dto;
             var entity = await _context.Products.FindAsync(request.ProductId);
+            if (entity == null)
+            {
+                throw new NotFoundException(nameof(Product), request.ProductId);
+            }
             entity.Name = dto.Name;
-            entity.StatusId = (StatusId)dto.StatusId;
+            entity.StatusId = dto.StatusId;
             entity.Stock = dto.Stock;
             entity.Description = dto.Description;
             entity.Price = dto.Price;

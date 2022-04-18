@@ -3,8 +3,10 @@ using Application.Products.Commands.UpdateProduct;
 using Application.Products.Queries.GetProduct;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Evaluacion.API.Controllers
+namespace Evaluacion.API.Controllers.V1
 {
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/products")]
     public class ProductsController : ApiControllerBase
     {
 
@@ -34,6 +36,7 @@ namespace Evaluacion.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpPut("{productId}")]
         public async Task<IActionResult> UpdateProductAsync(Guid productId, [FromBody] UpdateProductDto dto)
