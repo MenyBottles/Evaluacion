@@ -41,7 +41,7 @@ namespace Application.Products.Queries.GetProduct
             //entity.Status = status.Find(o => o.StatusId == entity.StatusId);
             var result = _mapper.Map<GetProductDto>(entity);
             result.Discount = await _discountService.GetDiscountAsync();
-            result.FinalPrice = result.Price * (100 - result.Discount) / 100;
+            result.FinalPrice = Math.Round(result.Price * (100 - result.Discount) / 100,2);
             return result;
         }
     }

@@ -17,12 +17,12 @@ namespace Application.Products.Commands.CreateProduct
         public CreateProductDto Dto { get; set; }
     }
 
-    public class AddProductCommandHandler : IRequestHandler<CreateProductCommand, GetProductDto>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, GetProductDto>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
 
-        public AddProductCommandHandler(IApplicationDbContext context, IMapper mapper)
+        public CreateProductCommandHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -34,7 +34,7 @@ namespace Application.Products.Commands.CreateProduct
             var entity = new Product
             {
                 Name = dto.Name,
-                StatusId = (StatusId)dto.StatusId,
+                StatusId = dto.StatusId,
                 Stock = dto.Stock,
                 Description = dto.Description,
                 Price = dto.Price

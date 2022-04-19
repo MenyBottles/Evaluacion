@@ -8,7 +8,6 @@ public class TodoItemConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder.HasKey(x => x.ProductId);
         builder.Property(o => o.Name)
             .IsRequired();
         builder.Property(o => o.Description)

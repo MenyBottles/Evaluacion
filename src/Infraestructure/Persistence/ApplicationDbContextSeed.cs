@@ -11,9 +11,8 @@ public static class ApplicationDbContextSeed
     public static async Task SeedSampleDataAsync(ApplicationDbContext context)
     {
 
-        var anyStatus = await context.Status.AnyAsync();
         // Seed, if necessary
-        if (!anyStatus)
+        if (!context.Status.Any())
         {
             await context.Database.EnsureCreatedAsync();
             var status = Enum.GetValues(typeof(StatusId))
